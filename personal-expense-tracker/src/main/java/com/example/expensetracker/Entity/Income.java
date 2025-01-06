@@ -4,16 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Income {
 
 	@Id
@@ -24,4 +17,58 @@ public class Income {
 	private double amount;
 	private LocalDate date;
 
+	// Default Constructor
+	public Income() {}
+
+	// Parameterized Constructor
+	public Income(long id, String source, double amount, LocalDate date) {
+		this.id = id;
+		this.source = source;
+		this.amount = amount;
+		this.date = date;
+	}
+
+	// Getters and Setters
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
+
+	public LocalDate getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
+
+	// toString Method
+	@Override
+	public String toString() {
+		return "Income{" +
+				"id=" + id +
+				", source='" + source + '\'' +
+				", amount=" + amount +
+				", date=" + date +
+				'}';
+	}
 }

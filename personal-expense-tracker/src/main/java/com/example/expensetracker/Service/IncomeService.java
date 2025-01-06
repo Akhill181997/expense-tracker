@@ -38,7 +38,7 @@ public class IncomeService {
     // Calculate total income
     public Mono<Double> getTotalIncome() {
         return incomeRepository.findAll()
-                .map(Income::getAmount)
+                .map( income -> income.getAmount() )
                 .reduce(0.0, Double::sum);
     }
 }
