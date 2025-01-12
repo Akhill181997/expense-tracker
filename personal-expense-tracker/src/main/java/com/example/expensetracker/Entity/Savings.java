@@ -25,7 +25,7 @@ public class Savings {
 		this.savedAmount = savedAmount;
 	}
 
-	// Getters and Setters
+
 	public Long getId() {
 		return id;
 	}
@@ -50,7 +50,7 @@ public class Savings {
 		this.savedAmount = savedAmount;
 	}
 
-	// toString Method
+
 	@Override
 	public String toString() {
 		return "Savings{" +

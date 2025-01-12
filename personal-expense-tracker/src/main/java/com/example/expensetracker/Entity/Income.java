@@ -11,24 +11,13 @@ public class Income {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 
 	private String source;
 	private double amount;
 	private LocalDate date;
 
-	// Default Constructor
-	public Income() {}
 
-	// Parameterized Constructor
-	public Income(long id, String source, double amount, LocalDate date) {
-		this.id = id;
-		this.source = source;
-		this.amount = amount;
-		this.date = date;
-	}
-
-	// Getters and Setters
 	public long getId() {
 		return id;
 	}
@@ -61,7 +50,7 @@ public class Income {
 		this.date = date;
 	}
 
-	// toString Method
+
 	@Override
 	public String toString() {
 		return "Income{" +

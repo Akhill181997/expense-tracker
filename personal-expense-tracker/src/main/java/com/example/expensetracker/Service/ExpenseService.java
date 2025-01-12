@@ -1,42 +1,35 @@
 package com.example.expensetracker.Service;
 
-import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-import reactor.core.publisher.Flux;
-
 import com.example.expensetracker.Entity.Expense;
 import com.example.expensetracker.Repo.ExpenseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class ExpenseService {
-    private final ExpenseRepository expenseRepository;
 
-    public ExpenseService(ExpenseRepository expenseRepository) {
-        this.expenseRepository = expenseRepository;
-    }
+    @Autowired
+    private ExpenseRepository expenseRepository;  // Add @Autowired to inject the repository
 
-
-    public Flux<Expense> getAllExpenses() {
+    public List<Expense> getAllExpenses() {
         return expenseRepository.findAll();
     }
 
-
-    public Mono<Expense> addExpense(Expense expense) {
+    public Expense addExpense(Expense expense) {
         return expenseRepository.save(expense);
     }
 
-
-    public Flux<Expense> getExpensesByDateRange(LocalDate start, LocalDate end) {
+    public List<Expense> getExpensesByDateRange(LocalDate start, LocalDate end) {
         return expenseRepository.findByDateBetween(start, end);
     }
 
-
-    public Mono<Double> getTotalExpenses() {
+    public double getTotalExpenses() {
         return expenseRepository.findAll()
-                .map(Expense::getAmount)
-                .reduce(0.0, Double::sum);
+                .stream()
+                .mapToDouble(Expense::getAmount)
+                .sum();
     }
-
 }

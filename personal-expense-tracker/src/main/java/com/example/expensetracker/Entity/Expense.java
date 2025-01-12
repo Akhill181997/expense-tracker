@@ -14,10 +14,10 @@ public class Expense {
 	private double amount;
 	private LocalDate date;
 
-	// Default Constructor
+
 	public Expense() {}
 
-	// Parameterized Constructor
+
 	public Expense(Long id, String category, double amount, LocalDate date) {
 		this.id = id;
 		this.category = category;
@@ -25,7 +25,7 @@ public class Expense {
 		this.date = date;
 	}
 
-	// Getters and Setters
+
 	public Long getId() {
 		return id;
 	}
@@ -58,7 +58,7 @@ public class Expense {
 		this.date = date;
 	}
 
-	// toString Method
+
 	@Override
 	public String toString() {
 		return "Expense{" +

@@ -1,12 +1,12 @@
 package com.example.expensetracker.Repo;
 
 import com.example.expensetracker.Entity.Expense;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import reactor.core.publisher.Flux;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
+import java.util.List;
 
-public interface ExpenseRepository extends ReactiveCrudRepository<Expense, Long> {
-    // Reactive method to find expenses by date range
-    Flux<Expense> findByDateBetween(LocalDate startDate, LocalDate endDate);
+public interface ExpenseRepository extends JpaRepository<Expense, Long> {
+
+    List<Expense> findByDateBetween(LocalDate startDate, LocalDate endDate);
 }
