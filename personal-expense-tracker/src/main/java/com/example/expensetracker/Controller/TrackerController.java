@@ -1,5 +1,9 @@
 package com.example.expensetracker.Controller;
 
+import com.example.expensetracker.Model.MonthlyBudgetRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +65,18 @@ public class TrackerController {
         return savingsService.updateSavings(savings);
     }
 
+
+    @GetMapping("/income/recurring")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Income> getRecurringIncome() {
+        return incomeService.getRecurringIncome();  }
+
+    @GetMapping("/expenses/recurring")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
+    public List<Expense> getRecurringExpenses() {
+        return expenseService.getRecurringExpenses();
+    }
+
     @GetMapping("/remaining-balance")
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
     public Double getRemainingBalance() {
@@ -68,4 +84,26 @@ public class TrackerController {
         double totalExpenses = expenseService.getTotalExpenses();
         return totalIncome - totalExpenses;
     }
+
+
+    @PostMapping(value = "/monthly-budget")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String setMonthlyBudget(@RequestBody MonthlyBudgetRequest monthlyBudgetRequest) {
+        boolean isUpdated = expenseService.setMonthlyBudget(monthlyBudgetRequest.getCategory(), monthlyBudgetRequest.getBudget());
+        if (isUpdated) {
+            return "Monthly budget set successfully.";
+        } else {
+            return "Failed to set monthly budget.";
+        }
+    }
+
+
+
+
+    @GetMapping("/monthly-budget/{category}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public Double getMonthlyBudget(@PathVariable String category) {
+        return expenseService.getMonthlyBudget(category);
+    }
+
 }

@@ -13,6 +13,9 @@ public class Expense {
 	private String category;
 	private double amount;
 	private LocalDate date;
+	private Boolean isRecurring;
+	private String frequency;
+	//private Double monthlyBudget;
 
 
 	public Expense() {}
@@ -57,6 +60,30 @@ public class Expense {
 	public void setDate(LocalDate date) {
 		this.date = date;
 	}
+
+	public Boolean getIsRecurring() {
+		return isRecurring;
+	}
+
+	public void setIsRecurring(Boolean isRecurring) {
+		this.isRecurring = isRecurring;
+	}
+
+	public String getFrequency() {
+		return frequency;
+	}
+
+	public void setFrequency(String frequency) {
+		this.frequency = frequency;
+	}
+
+	/*public Double getMonthlyBudget() {
+		return monthlyBudget;
+	}
+
+	public void setMonthlyBudget(Double monthlyBudget) {
+		this.monthlyBudget = monthlyBudget;
+	}*/
 
 
 	@Override

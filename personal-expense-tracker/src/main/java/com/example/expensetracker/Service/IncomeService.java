@@ -12,7 +12,7 @@ import java.util.List;
 public class IncomeService {
 
     @Autowired
-    private IncomeRepository incomeRepository;  // Use @Autowired here to inject the repository
+    private IncomeRepository incomeRepository;
 
     public List<Income> getAllIncome() {
         return incomeRepository.findAll();
@@ -26,11 +26,15 @@ public class IncomeService {
         return incomeRepository.findByDateBetween(start, end);
     }
 
-    // Calculate total income
+
     public double getTotalIncome() {
         return incomeRepository.findAll()
                 .stream()
                 .mapToDouble(Income::getAmount)
                 .sum();
+    }
+
+    public List<Income> getRecurringIncome() {
+        return incomeRepository.findByIsRecurringTrue();
     }
 }

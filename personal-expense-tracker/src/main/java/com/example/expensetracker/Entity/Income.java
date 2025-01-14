@@ -16,6 +16,8 @@ public class Income {
 	private String source;
 	private double amount;
 	private LocalDate date;
+	private Boolean isRecurring;  // To check if income is recurring
+	private String frequency;
 
 
 	public long getId() {
@@ -48,6 +50,22 @@ public class Income {
 
 	public void setDate(LocalDate date) {
 		this.date = date;
+	}
+
+	public Boolean getIsRecurring() {
+		return isRecurring;
+	}
+
+	public void setIsRecurring(Boolean isRecurring) {
+		this.isRecurring = isRecurring;
+	}
+
+	public String getFrequency() {
+		return frequency;
+	}
+
+	public void setFrequency(String frequency) {
+		this.frequency = frequency;
 	}
 
 

@@ -10,7 +10,7 @@ import com.example.expensetracker.Repo.SavingsRepository;
 public class SavingsService {
 
     @Autowired
-    private SavingsRepository savingsRepository;  // Add @Autowired for dependency injection
+    private SavingsRepository savingsRepository;
 
     public Savings getSavings() {
         return savingsRepository.findAll().stream().findFirst().orElse(null);
