@@ -25,7 +25,7 @@ public class ExpenseService {
         Double categoryBudget = monthlyBudgets.get(category);
 
         if (categoryBudget != null) {
-            // Calculate total expenses for this category in the current month
+
             LocalDate now = LocalDate.now();
             LocalDate startOfMonth = now.withDayOfMonth(1);
             LocalDate endOfMonth = now.withDayOfMonth(now.lengthOfMonth());
