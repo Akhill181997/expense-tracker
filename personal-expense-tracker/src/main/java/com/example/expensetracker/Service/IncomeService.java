@@ -18,13 +18,13 @@ public class IncomeService {
         return incomeRepository.findAll();
     }
 
-    public Income addIncome(Income income) {
-        if (income.getAmount() <= 0) {
-            throw new IllegalArgumentException("Income amount must be greater than zero");
-        }
 
+    public Income addIncome(Income income) {
+
+        validateIncome(income);
         return incomeRepository.save(income);
     }
+
 
     public List<Income> getIncomeByDateRange(LocalDate start, LocalDate end) {
         return incomeRepository.findByDateBetween(start, end);
@@ -38,7 +38,43 @@ public class IncomeService {
                 .sum();
     }
 
+
     public List<Income> getRecurringIncome() {
         return incomeRepository.findByIsRecurringTrue();
+    }
+
+
+    private void validateIncome(Income income) {
+
+        if (income.getSource() == null || income.getSource().isEmpty()) {
+            throw new IllegalArgumentException("Source cannot be null or empty.");
+        }
+        if (income.getSource().length() > 100) {
+            throw new IllegalArgumentException("Source cannot exceed 100 characters.");
+        }
+
+
+        if (income.getAmount() <= 0) {
+            throw new IllegalArgumentException("Income amount must be greater than zero.");
+        }
+
+
+        if (income.getDate() == null) {
+            throw new IllegalArgumentException("Date cannot be null.");
+        }
+        if (income.getDate().isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Date cannot be in the future.");
+        }
+
+
+        if (income.getIsRecurring() != null && income.getIsRecurring()) {
+
+            if (income.getFrequency() == null || income.getFrequency().isEmpty()) {
+                throw new IllegalArgumentException("Recurring income must have a frequency.");
+            }
+            if (income.getFrequency().length() > 50) {
+                throw new IllegalArgumentException("Frequency cannot exceed 50 characters.");
+            }
+        }
     }
 }
