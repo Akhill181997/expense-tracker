@@ -16,11 +16,16 @@ public class ExpenseService {
     @Autowired
     private ExpenseRepository expenseRepository;
 
+    private final Map<String, Double> monthlyBudgets = new HashMap<>();
+
     public List<Expense> getAllExpenses() {
         return expenseRepository.findAll();
     }
 
     public Expense addExpense(Expense expense) {
+        
+        validateExpense(expense);
+
         String category = expense.getCategory();
         Double categoryBudget = monthlyBudgets.get(category);
 
@@ -35,7 +40,7 @@ public class ExpenseService {
                     .mapToDouble(Expense::getAmount)
                     .sum();
 
-            // Add the new expense amount to the total and check against the budget
+
             if (totalCategoryExpense + expense.getAmount() > categoryBudget) {
                 throw new IllegalArgumentException("Monthly budget for category '" + category + "' exceeded.");
             }
@@ -44,11 +49,11 @@ public class ExpenseService {
         return expenseRepository.save(expense);
     }
 
+
     public List<Expense> getExpensesByDateRange(LocalDate start, LocalDate end) {
         return expenseRepository.findByDateBetween(start, end);
     }
 
-    private final Map<String, Double> monthlyBudgets = new HashMap<>();
 
     public double getTotalExpenses() {
         return expenseRepository.findAll()
@@ -57,12 +62,14 @@ public class ExpenseService {
                 .sum();
     }
 
+
     public List<Expense> getRecurringExpenses() {
         return expenseRepository.findByIsRecurringTrue();
     }
 
+
     public boolean setMonthlyBudget(String category, Double budget) {
-        if (category == null || budget == null || budget <= 0) {
+        if (category == null || category.isEmpty() || budget == null || budget <= 0) {
             return false;  // Invalid input
         }
         monthlyBudgets.put(category, budget);
@@ -72,5 +79,28 @@ public class ExpenseService {
 
     public Double getMonthlyBudget(String category) {
         return monthlyBudgets.get(category);
+    }
+
+
+    private void validateExpense(Expense expense) {
+
+        if (expense.getCategory() == null || expense.getCategory().isEmpty()) {
+            throw new IllegalArgumentException("Expense category cannot be null or empty.");
+        }
+
+
+        if (expense.getAmount() <= 0) {
+            throw new IllegalArgumentException("Expense amount must be greater than zero.");
+        }
+
+
+        if (expense.getDate() == null || expense.getDate().isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Expense date cannot be in the future.");
+        }
+
+
+        if (expense.getIsRecurring() != null && expense.getIsRecurring() && (expense.getFrequency() == null || expense.getFrequency().isEmpty())) {
+            throw new IllegalArgumentException("Recurring expense must have a frequency.");
+        }
     }
 }
