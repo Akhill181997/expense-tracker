@@ -19,6 +19,10 @@ public class IncomeService {
     }
 
     public Income addIncome(Income income) {
+        if (income.getAmount() <= 0) {
+            throw new IllegalArgumentException("Income amount must be greater than zero");
+        }
+
         return incomeRepository.save(income);
     }
 

@@ -4,7 +4,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
+import javax.validation.constraints.Min;
 import java.time.LocalDate;
+
+
 
 @Entity
 public class Income {
@@ -14,7 +18,10 @@ public class Income {
 	private Long id;
 
 	private String source;
+
+
 	private double amount;
+
 	private LocalDate date;
 	private Boolean isRecurring;  // To check if income is recurring
 	private String frequency;

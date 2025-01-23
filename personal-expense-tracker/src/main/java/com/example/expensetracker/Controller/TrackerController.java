@@ -1,6 +1,7 @@
 package com.example.expensetracker.Controller;
 
 import com.example.expensetracker.Model.MonthlyBudgetRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.example.expensetracker.Entity.Expense;
@@ -12,6 +13,7 @@ import com.example.expensetracker.Service.SavingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -41,11 +43,13 @@ public class TrackerController {
 
     @PostMapping("/income")
     @PreAuthorize("hasRole('ADMIN')")
-    public Income addIncome(@RequestBody Income income) {
+    public ResponseEntity<Income> addIncome(@RequestBody Income income) {
         logger.info("Adding new income: {}", income);
+
         Income addedIncome = incomeService.addIncome(income);
         logger.info("Successfully added income with ID: {}", addedIncome.getId());
-        return addedIncome;
+
+        return ResponseEntity.ok(addedIncome);
     }
 
     @GetMapping("/expenses")

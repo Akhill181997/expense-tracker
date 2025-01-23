@@ -97,6 +97,26 @@
 			<version>2.20.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
+			<version>2.0.2</version> <!-- You can adjust the version accordingly -->
+		</dependency>
+
+		<!-- Hibernate Validator (Provides the actual validation implementation) -->
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>6.0.18.Final</version> <!-- Adjust the version as necessary -->
+		</dependency>
+
+		<!-- For Bean Validation with Jakarta -->
+		<dependency>
+			<groupId>org.glassfish</groupId>
+			<artifactId>jakarta.el</artifactId>
+			<version>3.0.3</version> <!-- Needed for expression language (EL) evaluation -->
+		</dependency>
+
 		<!-- Exclude Default Spring Boot Logging -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
