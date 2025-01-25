@@ -1,6 +1,7 @@
 package com.example.expensetracker.Controller;
 
 import com.example.expensetracker.Model.MonthlyBudgetRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,6 @@ import com.example.expensetracker.Service.SavingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -32,95 +32,102 @@ public class TrackerController {
         this.savingsService = savingsService;
     }
 
+    // Get all incomes
     @GetMapping("/income")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Income> getAllIncome() {
+    public ResponseEntity<List<Income>> getAllIncome() {
         logger.info("Fetching all incomes.");
         List<Income> incomes = incomeService.getAllIncome();
         logger.info("Successfully fetched {} incomes.", incomes.size());
-        return incomes;
+        return ResponseEntity.ok(incomes);
     }
 
+    // Add a new income
     @PostMapping("/income")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Income> addIncome(@RequestBody Income income) {
         logger.info("Adding new income: {}", income);
-
         Income addedIncome = incomeService.addIncome(income);
         logger.info("Successfully added income with ID: {}", addedIncome.getId());
-
-        return ResponseEntity.ok(addedIncome);
+        return ResponseEntity.status(HttpStatus.CREATED).body(addedIncome);
     }
 
+    // Get all expenses
     @GetMapping("/expenses")
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
-    public List<Expense> getAllExpenses() {
-       // logger.info("Fetching all expenses.");
+    public ResponseEntity<List<Expense>> getAllExpenses() {
+        logger.info("Fetching all expenses.");
         List<Expense> expenses = expenseService.getAllExpenses();
         logger.info("Successfully fetched {} expenses.", expenses.size());
-        return expenses;
+        return ResponseEntity.ok(expenses);
     }
 
+    // Add a new expense
     @PostMapping("/expenses")
     @PreAuthorize("hasRole('ADMIN')")
-    public Expense addExpense(@RequestBody Expense expense) {
+    public ResponseEntity<Expense> addExpense(@RequestBody Expense expense) {
         logger.info("Adding new expense: {}", expense);
         Expense addedExpense = expenseService.addExpense(expense);
         logger.info("Successfully added expense with ID: {}", addedExpense.getId());
-        return addedExpense;
+        return ResponseEntity.status(HttpStatus.CREATED).body(addedExpense);
     }
 
+    // Get savings
     @GetMapping("/savings")
     @PreAuthorize("hasRole('GUEST')")
-    public Savings getSavings() {
+    public ResponseEntity<Savings> getSavings() {
         logger.info("Fetching savings.");
         Savings savings = savingsService.getSavings();
         logger.info("Successfully fetched savings: {}", savings);
-        return savings;
+        return ResponseEntity.ok(savings);
     }
 
+    // Update savings
     @PutMapping("/savings")
     @PreAuthorize("hasRole('ADMIN')")
-    public Savings updateSavings(@RequestBody Savings savings) {
+    public ResponseEntity<Savings> updateSavings(@RequestBody Savings savings) {
         logger.info("Updating savings: {}", savings);
         Savings updatedSavings = savingsService.updateSavings(savings);
         logger.info("Successfully updated savings to: {}", updatedSavings);
-        return updatedSavings;
+        return ResponseEntity.ok(updatedSavings);
     }
 
+    // Get recurring incomes
     @GetMapping("/income/recurring")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Income> getRecurringIncome() {
+    public ResponseEntity<List<Income>> getRecurringIncome() {
         logger.info("Fetching recurring incomes.");
         List<Income> recurringIncomes = incomeService.getRecurringIncome();
         logger.info("Successfully fetched all recurring incomes.");
-        return recurringIncomes;
+        return ResponseEntity.ok(recurringIncomes);
     }
 
+    // Get recurring expenses
     @GetMapping("/expenses/recurring")
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
-    public List<Expense> getRecurringExpenses() {
+    public ResponseEntity<List<Expense>> getRecurringExpenses() {
         logger.info("Fetching recurring expenses.");
         List<Expense> recurringExpenses = expenseService.getRecurringExpenses();
-       // logger.info("Successfully fetched {} recurring expenses.", recurringExpenses.size());
         logger.info("Successfully fetched all recurring expenses.");
-        return recurringExpenses;
+        return ResponseEntity.ok(recurringExpenses);
     }
 
+    // Get remaining balance
     @GetMapping("/remaining-balance")
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
-    public Double getRemainingBalance() {
+    public ResponseEntity<Double> getRemainingBalance() {
         logger.info("Calculating remaining balance.");
         double totalIncome = incomeService.getTotalIncome();
         double totalExpenses = expenseService.getTotalExpenses();
         double remainingBalance = totalIncome - totalExpenses;
         logger.info("Remaining balance calculated: {}", remainingBalance);
-        return remainingBalance;
+        return ResponseEntity.ok(remainingBalance);
     }
 
-    @PostMapping(value = "/monthly-budget")
+    // Set monthly budget
+    @PostMapping("/monthly-budget")
     @PreAuthorize("hasRole('ADMIN')")
-    public String setMonthlyBudget(@RequestBody MonthlyBudgetRequest monthlyBudgetRequest) {
+    public ResponseEntity<String> setMonthlyBudget(@RequestBody MonthlyBudgetRequest monthlyBudgetRequest) {
         logger.info("Setting monthly budget for category: {} with budget: {}",
                 monthlyBudgetRequest.getCategory(), monthlyBudgetRequest.getBudget());
         try {
@@ -128,23 +135,28 @@ public class TrackerController {
                     monthlyBudgetRequest.getCategory(), monthlyBudgetRequest.getBudget());
             if (isUpdated) {
                 logger.info("Monthly budget set successfully for category: {}.", monthlyBudgetRequest.getCategory());
-                return "Monthly budget set successfully.";
+                return ResponseEntity.ok("Monthly budget set successfully.");
             } else {
-                logger.warn("Failed to set monthly budget for category: {}.", monthlyBudgetRequest.getCategory());
-                return "Failed to set monthly budget.";
+                logger.info("Failed to set monthly budget for category: {}.", monthlyBudgetRequest.getCategory());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to set monthly budget.");
             }
         } catch (Exception e) {
             logger.error("Error while setting monthly budget for category: {}", monthlyBudgetRequest.getCategory(), e);
-            throw e;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while setting the budget.");
         }
     }
 
+    // Get monthly budget for a category
     @GetMapping("/monthly-budget/{category}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public Double getMonthlyBudget(@PathVariable String category) {
+    public ResponseEntity<Double> getMonthlyBudget(@PathVariable String category) {
         logger.info("Fetching monthly budget for category: {}", category);
         Double budget = expenseService.getMonthlyBudget(category);
+        if (budget == null) {
+            logger.info("No budget set for category: {}", category);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
         logger.info("Fetched monthly budget for category {}: {}", category, budget);
-        return budget;
+        return ResponseEntity.ok(budget);
     }
 }
