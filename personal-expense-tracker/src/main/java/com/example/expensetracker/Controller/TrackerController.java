@@ -1,6 +1,7 @@
 package com.example.expensetracker.Controller;
 
 import com.example.expensetracker.Model.MonthlyBudgetRequest;
+import com.example.expensetracker.Response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,93 +36,109 @@ public class TrackerController {
     // Get all incomes
     @GetMapping("/income")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Income>> getAllIncome() {
+    public ResponseEntity<ApiResponse<List<Income>>> getAllIncome() {
         logger.info("Fetching all incomes.");
         List<Income> incomes = incomeService.getAllIncome();
         logger.info("Successfully fetched {} incomes.", incomes.size());
-        return ResponseEntity.ok(incomes);
+        ApiResponse<List<Income>> response = new ApiResponse<>("Incomes fetched successfully.", incomes);
+        return ResponseEntity.ok(response);
     }
+
+
+
+
 
     // Add a new income
     @PostMapping("/income")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Income> addIncome(@RequestBody Income income) {
+    public ResponseEntity<ApiResponse<Income>> addIncome(@RequestBody Income income) {
         logger.info("Adding new income: {}", income);
         Income addedIncome = incomeService.addIncome(income);
         logger.info("Successfully added income with ID: {}", addedIncome.getId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(addedIncome);
+        ApiResponse<Income> response = new ApiResponse<>("Income added successfully.", addedIncome);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // Get all expenses
     @GetMapping("/expenses")
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
-    public ResponseEntity<List<Expense>> getAllExpenses() {
+    public ResponseEntity<ApiResponse<List<Expense>>> getAllExpenses() {
         logger.info("Fetching all expenses.");
         List<Expense> expenses = expenseService.getAllExpenses();
         logger.info("Successfully fetched {} expenses.", expenses.size());
-        return ResponseEntity.ok(expenses);
+        ApiResponse<List<Expense>> response = new ApiResponse<>("Expenses fetched successfully.", expenses);
+        return ResponseEntity.ok(response);
     }
 
     // Add a new expense
     @PostMapping("/expenses")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Expense> addExpense(@RequestBody Expense expense) {
+    public ResponseEntity<ApiResponse<Expense>> addExpense(@RequestBody Expense expense) {
         logger.info("Adding new expense: {}", expense);
         Expense addedExpense = expenseService.addExpense(expense);
         logger.info("Successfully added expense with ID: {}", addedExpense.getId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(addedExpense);
+        ApiResponse<Expense> response = new ApiResponse<>("Expense added successfully.", addedExpense);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+
 
     // Get savings
     @GetMapping("/savings")
     @PreAuthorize("hasRole('GUEST')")
-    public ResponseEntity<Savings> getSavings() {
+    public ResponseEntity<ApiResponse<Savings>> getSavings() {
         logger.info("Fetching savings.");
         Savings savings = savingsService.getSavings();
         logger.info("Successfully fetched savings: {}", savings);
-        return ResponseEntity.ok(savings);
+        ApiResponse<Savings> response = new ApiResponse<>("Savings fetched successfully.", savings);
+        return ResponseEntity.ok(response);
     }
 
     // Update savings
     @PutMapping("/savings")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Savings> updateSavings(@RequestBody Savings savings) {
+    public ResponseEntity<ApiResponse<Savings>> updateSavings(@RequestBody Savings savings) {
         logger.info("Updating savings: {}", savings);
         Savings updatedSavings = savingsService.updateSavings(savings);
         logger.info("Successfully updated savings to: {}", updatedSavings);
-        return ResponseEntity.ok(updatedSavings);
+        ApiResponse<Savings> response = new ApiResponse<>("Savings updated successfully.", updatedSavings);
+        return ResponseEntity.ok(response);
     }
 
     // Get recurring incomes
+
     @GetMapping("/income/recurring")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Income>> getRecurringIncome() {
+    public ResponseEntity<ApiResponse<List<Income>>> getRecurringIncome() {
         logger.info("Fetching recurring incomes.");
         List<Income> recurringIncomes = incomeService.getRecurringIncome();
         logger.info("Successfully fetched all recurring incomes.");
-        return ResponseEntity.ok(recurringIncomes);
+        ApiResponse<List<Income>> response = new ApiResponse<>("Recurring incomes fetched successfully.", recurringIncomes);
+        return ResponseEntity.ok(response);
     }
 
     // Get recurring expenses
     @GetMapping("/expenses/recurring")
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
-    public ResponseEntity<List<Expense>> getRecurringExpenses() {
+    public ResponseEntity<ApiResponse<List<Expense>>> getRecurringExpenses() {
         logger.info("Fetching recurring expenses.");
         List<Expense> recurringExpenses = expenseService.getRecurringExpenses();
         logger.info("Successfully fetched all recurring expenses.");
-        return ResponseEntity.ok(recurringExpenses);
+        ApiResponse<List<Expense>> response = new ApiResponse<>("Recurring expenses fetched successfully.", recurringExpenses);
+        return ResponseEntity.ok(response);
     }
 
     // Get remaining balance
     @GetMapping("/remaining-balance")
     @PreAuthorize("hasAnyRole('ADMIN', 'GUEST')")
-    public ResponseEntity<Double> getRemainingBalance() {
+    public ResponseEntity<ApiResponse<Double>> getRemainingBalance() {
         logger.info("Calculating remaining balance.");
         double totalIncome = incomeService.getTotalIncome();
         double totalExpenses = expenseService.getTotalExpenses();
         double remainingBalance = totalIncome - totalExpenses;
         logger.info("Remaining balance calculated: {}", remainingBalance);
-        return ResponseEntity.ok(remainingBalance);
+        ApiResponse<Double> response = new ApiResponse<>("Remaining balance calculated successfully.", remainingBalance);
+        return ResponseEntity.ok(response);
     }
 
     // Set monthly budget
